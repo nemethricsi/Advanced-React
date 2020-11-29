@@ -1,7 +1,5 @@
 import styled from "styled-components";
 
-// This is a comment
-
 const CartStyles = styled.div`
   padding: 20px;
   position: relative;
