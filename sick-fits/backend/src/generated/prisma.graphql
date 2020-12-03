@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/richard-3095df/sick-fits/dev
-# timestamp: Wed Dec 02 2020 23:00:33 GMT+0100 (Central European Standard Time)
+# timestamp: Thu Dec 03 2020 20:05:26 GMT+0100 (Central European Standard Time)
 
 type AggregateItem {
   count: Int!
