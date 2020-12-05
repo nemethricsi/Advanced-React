@@ -7,6 +7,9 @@ const { transport, makeANiceEmail } = require("../mail");
 const Mutations = {
   async createItem(parent, args, ctx, info) {
     // TODO: check if they are logged in
+    if (!ctx.request.userId) {
+      throw new Error(`You must be logged in to do that!`);
+    }
 
     const item = await ctx.db.mutation.createItem(
       {
@@ -14,6 +17,14 @@ const Mutations = {
           // title: args.title,
           // description: args.description,
           ...args,
+
+          // This is how we create relationship
+          // between the user and the item in Prisa
+          user: {
+            connect: {
+              id: ctx.request.userId,
+            },
+          },
         },
       },
       info
