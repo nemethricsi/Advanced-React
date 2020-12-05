@@ -30,6 +30,8 @@ function createClient({ headers }) {
               data: { cartOpen: !cartOpen },
             };
             client.cache.writeData(data);
+
+            // This will fix "Missing field in * in {} warning"
             return data;
           },
         },
