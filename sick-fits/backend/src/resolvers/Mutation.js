@@ -111,9 +111,11 @@ const Mutations = {
       data: { resetToken, resetTokenExpiry },
     });
     // 3. Send an email with reset token
-    console.log(user.email);
     const mailRes = await transport.sendMail({
-      from: "nemethricsi@gmail.com",
+      from: {
+        name: process.env.MAIL_FROM_NAME,
+        address: process.env.MAIL_FROM_ADDRESS,
+      },
       to: user.email,
       subject: "Your Password Reset Token",
       html: makeANiceEmail(
