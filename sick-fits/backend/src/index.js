@@ -32,9 +32,13 @@ server.express.use(async (req, res, next) => {
   next();
 });
 
-server.applyMiddleware({
-  path: "/",
-  cors: false, // disables the apollo-server-express cors to allow the cors middleware use
+server.express.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
 });
 
 server.start(
