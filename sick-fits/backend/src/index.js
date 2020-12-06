@@ -32,6 +32,12 @@ server.express.use(async (req, res, next) => {
   next();
 });
 
+server.applyMiddleware({
+  app,
+  path: "/",
+  cors: false, // disables the apollo-server-express cors to allow the cors middleware use
+});
+
 server.start(
   {
     cors: {
