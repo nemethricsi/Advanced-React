@@ -122,7 +122,9 @@ const Mutations = {
     return user;
   },
   signout(parent, args, ctx, info) {
-    ctx.response.clearCookie("token");
+    ctx.response.clearCookie("token", {
+      sameSite: "None",
+    });
     return { message: "Good bye!" };
   },
   async requestReset(parent, args, ctx, info) {
