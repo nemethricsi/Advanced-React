@@ -30,7 +30,7 @@ function totalItems(cart) {
 }
 
 class TakeMyMoney extends React.Component {
-  onToken = async (res, createOrder) => {
+  onToken = async (res, createOrder, toggleCart) => {
     NProgress.start();
     console.log("On Token Called");
     console.log(res.id);
@@ -41,6 +41,7 @@ class TakeMyMoney extends React.Component {
         token: res.id,
       },
     }).catch((err) => alert(err.message));
+    toggleCart();
     Router.push({
       pathname: "/order",
       query: { id: order.data.createOrder.id },
@@ -51,29 +52,30 @@ class TakeMyMoney extends React.Component {
     return (
       <User>
         {({ data: { me } }) => (
-          <Mutation
-            mutation={CREATE_ORDER_MUTATION}
-            refetchQueries={[
-              { query: CURRENT_USER_QUERY },
-              { query: TOGGLE_CART_MUTATION },
-            ]}
-          >
-            {(createOrder) => (
-              <StripeCheckout
-                amount={calcTotalPrice(me.cart)}
-                name='Sick Fits'
-                description={`Order of ${totalItems(me.cart)} items!`}
-                image={
-                  me.cart.length && me.cart[0].item && me.cart[0].item.image
-                }
-                stripeKey='pk_test_51HvMRdILlGaDQZHebzf3HXC3O0T8sA9SiVDyD3kwXdnK8MfofXn0jWqEQij6OxFI3INxHF5Z0Bfe74Kx9jv7Fhjk00LBN23s9e'
-                currency='USD'
-                email={me.email}
-                locale='auto'
-                token={(res) => this.onToken(res, createOrder)}
+          <Mutation mutation={TOGGLE_CART_MUTATION}>
+            {(toggleCart) => (
+              <Mutation
+                mutation={CREATE_ORDER_MUTATION}
+                refetchQueries={[{ query: CURRENT_USER_QUERY }]}
               >
-                {this.props.children}
-              </StripeCheckout>
+                {(createOrder) => (
+                  <StripeCheckout
+                    amount={calcTotalPrice(me.cart)}
+                    name='Sick Fits'
+                    description={`Order of ${totalItems(me.cart)} items!`}
+                    image={
+                      me.cart.length && me.cart[0].item && me.cart[0].item.image
+                    }
+                    stripeKey='pk_test_51HvMRdILlGaDQZHebzf3HXC3O0T8sA9SiVDyD3kwXdnK8MfofXn0jWqEQij6OxFI3INxHF5Z0Bfe74Kx9jv7Fhjk00LBN23s9e'
+                    currency='USD'
+                    email={me.email}
+                    locale='auto'
+                    token={(res) => this.onToken(res, createOrder, toggleCart)}
+                  >
+                    {this.props.children}
+                  </StripeCheckout>
+                )}
+              </Mutation>
             )}
           </Mutation>
         )}
