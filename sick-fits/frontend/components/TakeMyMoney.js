@@ -9,32 +9,59 @@ import Error from "./ErrorMessage";
 import User, { CURRENT_USER_QUERY } from "./User";
 import CartItem from "./CartItem";
 
+const CREATE_ORDER_MUTATION = gql`
+  mutation CREATE_ORDER_MUTATION($token: String!) {
+    createOrder(token: $token) {
+      id
+      charge
+      total
+      items {
+        id
+        title
+      }
+    }
+  }
+`;
+
 function totalItems(cart) {
   return cart.reduce((tally, cartItem) => tally + cartItem.quantity, 0);
 }
 
 class TakeMyMoney extends React.Component {
-  onToken = (res) => {
+  onToken = (res, createOrder) => {
     console.log("On Token Called");
     console.log(res.id);
+    // manually call the mutation once we have the Stripe token
+    createOrder({
+      variables: {
+        token: res.id,
+      },
+    }).catch((err) => alert(err.message));
   };
   render() {
     return (
       <User>
         {({ data: { me } }) => (
-          <StripeCheckout
-            amount={calcTotalPrice(me.cart)}
-            name='Sick Fits'
-            description={`Order of ${totalItems(me.cart)} items!`}
-            image={me.cart[0].item && me.cart[0].item.image}
-            stripeKey='pk_test_51HvMRdILlGaDQZHebzf3HXC3O0T8sA9SiVDyD3kwXdnK8MfofXn0jWqEQij6OxFI3INxHF5Z0Bfe74Kx9jv7Fhjk00LBN23s9e'
-            currency='USD'
-            email={me.email}
-            locale='auto'
-            token={(res) => this.onToken(res)}
+          <Mutation
+            mutation={CREATE_ORDER_MUTATION}
+            refetchQueries={[{ query: CURRENT_USER_QUERY }]}
           >
-            {this.props.children}
-          </StripeCheckout>
+            {(createOrder) => (
+              <StripeCheckout
+                amount={calcTotalPrice(me.cart)}
+                name='Sick Fits'
+                description={`Order of ${totalItems(me.cart)} items!`}
+                image={me.cart && me.cart[0].item && me.cart[0].item.image}
+                stripeKey='pk_test_51HvMRdILlGaDQZHebzf3HXC3O0T8sA9SiVDyD3kwXdnK8MfofXn0jWqEQij6OxFI3INxHF5Z0Bfe74Kx9jv7Fhjk00LBN23s9e'
+                currency='USD'
+                email={me.email}
+                locale='auto'
+                token={(res) => this.onToken(res, createOrder)}
+              >
+                {this.props.children}
+              </StripeCheckout>
+            )}
+          </Mutation>
         )}
       </User>
     );
