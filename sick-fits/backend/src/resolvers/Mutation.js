@@ -93,6 +93,7 @@ const Mutations = {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year cookie,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
     });
     // Finally return the user to the browser
     return user;
@@ -115,6 +116,7 @@ const Mutations = {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year cookie
       secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
     });
     // 5. Return the User
     return user;
@@ -186,6 +188,7 @@ const Mutations = {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
     });
     // 8. Return the user
     return updatedUser;
