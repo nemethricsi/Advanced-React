@@ -123,6 +123,7 @@ const Mutations = {
   },
   signout(parent, args, ctx, info) {
     ctx.response.clearCookie("token", {
+      secure: (process.env.NODE_ENV = "production"),
       sameSite: "None",
     });
     return { message: "Good bye!" };
