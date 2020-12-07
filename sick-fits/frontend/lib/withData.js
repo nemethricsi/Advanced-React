@@ -5,7 +5,7 @@ import { LOCAL_STATE_QUERY } from "../components/Cart";
 
 function createClient({ headers }) {
   return new ApolloClient({
-    credentials: "include",
+    // credentials: "include",
     // connectToDevTools: true,
     uri: process.env.NODE_ENV === "development" ? endpoint : prodEndpoint,
     request: (operation) => {
