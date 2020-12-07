@@ -4,6 +4,7 @@ import { Mutation } from "react-apollo";
 import NProgress from "nprogress";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
+import Router from "next/router";
 import calcTotalPrice from "../lib/calcTotalPrice";
 import Error from "./ErrorMessage";
 import User, { CURRENT_USER_QUERY } from "./User";
@@ -29,16 +30,22 @@ function totalItems(cart) {
 
 class TakeMyMoney extends React.Component {
   onToken = async (res, createOrder) => {
+    NProgress.start();
     console.log("On Token Called");
     console.log(res.id);
+
     // manually call the mutation once we have the Stripe token
     const order = await createOrder({
       variables: {
         token: res.id,
       },
     }).catch((err) => alert(err.message));
-    console.log(order);
+    Router.push({
+      pathname: "/order",
+      query: { id: order.data.createOrder.id },
+    });
   };
+
   render() {
     return (
       <User>
