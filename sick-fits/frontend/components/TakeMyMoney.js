@@ -9,6 +9,7 @@ import calcTotalPrice from "../lib/calcTotalPrice";
 import Error from "./ErrorMessage";
 import User, { CURRENT_USER_QUERY } from "./User";
 import CartItem from "./CartItem";
+import { TOGGLE_CART_MUTATION } from "./Cart";
 
 const CREATE_ORDER_MUTATION = gql`
   mutation CREATE_ORDER_MUTATION($token: String!) {
@@ -52,7 +53,10 @@ class TakeMyMoney extends React.Component {
         {({ data: { me } }) => (
           <Mutation
             mutation={CREATE_ORDER_MUTATION}
-            refetchQueries={[{ query: CURRENT_USER_QUERY }]}
+            refetchQueries={[
+              { query: CURRENT_USER_QUERY },
+              { query: TOGGLE_CART_MUTATION },
+            ]}
           >
             {(createOrder) => (
               <StripeCheckout
