@@ -32,7 +32,7 @@ server.express.use(async (req, res, next) => {
   next();
 });
 
-server.express.use(function(req, res, next) {
+server.express.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", process.env.FRONTEND_URL);
   res.header(
     "Access-Control-Allow-Headers",
@@ -41,6 +41,7 @@ server.express.use(function(req, res, next) {
   next();
 });
 
+// start it!
 server.start(
   {
     cors: {
